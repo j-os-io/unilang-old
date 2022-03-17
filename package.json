@@ -1,0 +1,26 @@
+{
+  "name": "unilang",
+  "version": "0.0.1",
+  "description": "Universal Language engine",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/j-os-io/unilang.git"
+  },
+  "keywords": [
+    "universal",
+    "language",
+    "engine",
+    "parser",
+    "node"
+  ],
+  "author": "Geckos' Ink <support@geckos.ink>",
+  "license": "CC-BY-NC-ND-4.0",
+  "bugs": {
+    "url": "https://github.com/j-os-io/unilang/issues"
+  },
+  "homepage": "https://github.com/j-os-io/unilang#readme"
+}
