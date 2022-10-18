@@ -25,7 +25,7 @@ class Decanter {
             let ch = str.charAt(c);
 
             //div let's go!  
-            
+            // continue here..
         }
     }
 }
