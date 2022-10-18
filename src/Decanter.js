@@ -13,9 +13,41 @@ class Decanter {
 
         this.dividends = [];
     }
+    
+    Match(ch, dict, parent=undefined){
+        /// Define fixed properties
+        if(!dict.$){
+            let $ = dict.$ = {
+                parent            
+            }
 
-    Match(){
+            switch(typeof dict){
+                case 'object':
+                    $.type = 1;
+                    break;
+
+                case 'array':
+                    $.type = 2;
+                    break;
+
+                default:
+                    $.type = 0;
+            }
+
+            delete dict.$parent;
+        }
+
+        /// Elaborate dict
+        let $ = dict.$;
         
+        if($.type == 1){ // object
+            for(let p in dict){
+                this.Match(ch, dict[p], dict);
+            }
+        }
+        else if($.type == 2){ // array
+            //todo
+        }
     }
     
     Read(str){
@@ -26,13 +58,14 @@ class Decanter {
 
             //div let's go!  
             // continue here..
+            this.Match(ch, this.dict);
         }
     }
 }
 
 class Dividend {
     constructor(){
-        this.dividend = 'dunno';
+        this.dividend = '';
 
         this.start = 0;
         this.end = undefined;
