@@ -1,1 +1,5 @@
-// Aka C* (no geographic references...)
+// CMultiplied Aka C* (no geographic references...)
+
+class CMul {
+    //how to define it?
+}
