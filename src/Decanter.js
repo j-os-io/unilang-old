@@ -8,7 +8,8 @@ class Decanter {
                     lower:['A', 'Z']
                 },
                 number:['0','9']
-            }
+            },
+            space : [-1, ' ', '\t']
         };
 
         this.dividends = [];
