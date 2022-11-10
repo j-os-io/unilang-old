@@ -29,6 +29,11 @@ class Decanter {
 
                 case 'array':
                     $.type = 2;
+
+                    if((dict.length > 0 && dict.length <= 2) && dict[0] !== -1){
+                        dict.n = '='
+                    }
+
                     break;
 
                 default:
