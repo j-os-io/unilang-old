@@ -18,69 +18,96 @@ class Decanter {
     Match(ch, dict, parent=undefined, name=undefined){
         /// Define fixed properties
         if(dict.$ === undefined){
-            let $ = dict.$ = {
-                parent,
-                name
-            }
 
-            switch(typeof dict){
-                case 'object':
-                    $.type = 1;
-                    break;
+            let typeDict = typeof dict
+            if(typeDict == 'object'){
+                if(Array.isArray(dict))
+                    typeDict = 'array'
 
-                case 'array':
-                    $.type = 2;
+                let $ = dict.$ = {
+                    parent,
+                    name
+                }
 
-                    if((dict.length > 0 && dict.length <= 2) && dict[0] !== -1){
-                        if(typeof dict[0] == 'string' && dict[0].length == 1){
-                            $.tArr = '><'
+                switch(typeDict){
+                    case 'object':
+                        $.type = 1;
+                        break;
+
+                    case 'array':
+                        $.type = 2;
+
+                        if(dict.length > 0){
+                            if(dict.length <= 2 && dict[0] !== -1){
+                                if(typeof dict[0] == 'string' && dict[0].length == 1){
+                                    $.tArr = '><'
+                                }
+                            }
+                            else {
+                                if(dict[0] === -1){
+                                    dict.slice(0, 1);
+                                }
+
+                                $.tArr = '..'
+                            }
                         }
-                    }
-                    else if(dict[0] === -1){
-                        dict.slice(0, 1);
-                    }
 
-                    break;
+                        break;
 
-                default:
-                    $.type = 0;
+                    default:
+                        $.type = 0;
+                }
             }
-
-            delete dict.$parent;
         }
 
         /// Elaborate winner function
-        function winner(){
+        function winner(val = undefined){
             let tree = [];
             let path = ''
             let cDict = dict;
+            let lastName = undefined
+
             while(cDict){
                 let name = cDict.$.name
                 if(name){
                     tree.push(name);
                     path += name + '.'
+                    lastName = name
                 }
 
-                cDict = dict.$.parent;
+                cDict = cDict.$.parent;
             }
 
-            path = path.substring(0, path.length-1)
+            if(val){
+                path += val
+                tree.push(val)
+            }
+            else {
+                path = path.substring(0, path.length-1)
+                val = lastName
+            }
 
             return {
                 path,
                 tree,
                 dict,
-                ch
+                ch,
+                val
             }
         }
 
         /// Elaborate dict
         let $ = dict.$;
-        
-        if($.type == 1){ // object
+
+        if(!$){
+            console.error("it shouldn't arrive here 26345", dict)
+        }
+        else if($.type == 1){ // object
             for(let p in dict){
-                let res = this.Match(ch, dict[p], dict, p);
-                if(res) return res
+                if(p != '$'){
+                    let res = this.Match(ch, dict[p], dict, p);
+                    if(res) return res
+                }
             }
         }
         else if($.type == 2){ // array
@@ -90,7 +117,18 @@ class Decanter {
                     return winner()
                 }
             }
+            else if(dict.$.tArr == '..'){
+                for(var val of dict){
+                    if(ch == val){
+                        return winner(val)
+                    }
+                }
+            }
             else { // is a normal list
+
+                console.log("currently unsupported 35462", dict)
+                return;
+
                 for(let p in dict){
                     let res = this.Match(ch, dict[p], dict, p);
                     if(res) return res
@@ -100,7 +138,7 @@ class Decanter {
 
         return false
     }
-    
+
     ReadChars(str){
         let div = this.newDiv();
 
@@ -114,10 +152,13 @@ class Decanter {
             if(!this.cmpDiv(win, prevWin)){
                 div = this.newDiv()
                 div.start = c
+                div.dict = win
             }
 
             div.end = c
             div.dividend += ch
+
+            prevWin = win
         }
     }
 
@@ -128,7 +169,7 @@ class Decanter {
     }
 
     cmpDiv(d1, d2){
-        return ((!d1 || !d2) && d1 == d2) || d1.path == d2.path
+        return d1 == d2 || (d1 && d2 && d1.path == d2.path)
     }
 }
 
