@@ -177,12 +177,11 @@ class Decanter {
                 }
             }
             else {
-                // is a range
-                if ($.tArr == '><') {
+                if ($.tArr == '><') { // is a range
                     if (ch >= dict[0] && ch <= dict[1]) {
                         return winner()
                     }
-                } else if ($.tArr == '..') {
+                } else if ($.tArr == '..') { // is one of them
                     for (var val of dict) {
                         if (ch == val) {
                             return winner(val)
