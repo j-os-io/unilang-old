@@ -2,6 +2,10 @@
 class Decanter {
     constructor(){
         this.dict = {
+            // Special matches
+            _groups: { },
+
+            // Normal matches
             alphaNumeric:{
                 alpha:{
                     upper:['a','z'],
@@ -9,10 +13,23 @@ class Decanter {
                 },
                 number:['0','9']
             },
-            space : [-1, ' ', '\t']
+            space : [-1, ' ', '\t']            
         };
 
         this.dividends = [];
+
+        // Special variables
+        this.curGroup = undefined;
+    }
+
+    DictAddStringSupport(){
+        let groups = this.dict._groups = this.dict._groups || {};
+        let string = groups.string = this.string || [];
+
+        string.push({
+            delimiter: '"',
+            exception: '\\'
+        });
     }
     
     Match(ch, dict, parent=undefined, name=undefined){
@@ -27,6 +44,22 @@ class Decanter {
                 let $ = dict.$ = {
                     parent,
                     name
+                }
+
+                // Check if it's a child of a special match
+                var p = parent;
+                while(p){
+                    if(p.$.special){
+                        $.specialType = p.$.name.substring(1);
+                        break;
+                    }
+
+                    p = p.$.parent;
+                }
+
+                // Special match
+                if(name && name[0]=='_'){
+                    $.special = true
                 }
 
                 switch(typeDict){
@@ -57,6 +90,7 @@ class Decanter {
                     default:
                         $.type = 0;
                 }
+                
             }
         }
 
@@ -102,39 +136,64 @@ class Decanter {
         if(!$){
             console.error("it shouldn't arrive here 26345", dict)
         }
-        else if($.type == 1){ // object
-            for(let p in dict){
-                if(p != '$'){
-                    let res = this.Match(ch, dict[p], dict, p);
-                    if(res) return res
-                }
+        else if($.type == 1){
+            switch($.specialType){
+                case 'groups':
+                    if(dict.$._exception){
+                        dict.$._exception = false;
+                    }
+                    else if(ch == dict.delimiter){
+                        if(this.curGroup != dict){
+                            this.curGroup = dict;
+                            return winner();
+                        }
+                        else {
+                            this.curGroup = undefined;
+                        }                        
+                    }
+                    else if(ch == dict.exception){
+                        dict.$._exception = true;
+                    }
+
+                    return this.curGroup;
+
+                default: 
+                    for(let p in dict){
+                        if(p != '$'){
+                            let res = this.Match(ch, dict[p], dict, p);
+                            if(res) return res
+                        }
+                    }
+                    break;
             }
         }
         else if($.type == 2){ // array
-            // is a range
-            if(dict.$.tArr == '><'){
-                if(ch >= dict[0] && ch <= dict[1]){
-                    return winner()
-                }
-            }
-            else if(dict.$.tArr == '..'){
-                for(var val of dict){
-                    if(ch == val){
-                        return winner(val)
+            if($.specialType){
+                for(let p in dict){
+                    if(p != '$') {
+                        let res = this.Match(ch, dict[p], dict, p);
+                        if (res) return res
                     }
                 }
             }
-            else { // is a normal list
-
-                console.log("currently unsupported 35462", dict)
-                return;
-
-                for(let p in dict){
-                    let res = this.Match(ch, dict[p], dict, p);
-                    if(res) return res
+            else {
+                // is a range
+                if ($.tArr == '><') {
+                    if (ch >= dict[0] && ch <= dict[1]) {
+                        return winner()
+                    }
+                } else if ($.tArr == '..') {
+                    for (var val of dict) {
+                        if (ch == val) {
+                            return winner(val)
+                        }
+                    }
+                } else { // is a normal list
+                    console.log("currently unsupported 35462", dict)
+                    return; //todo: behave like special array
                 }
             }
-        }
+        }        
 
         return false
     }
@@ -147,7 +206,13 @@ class Decanter {
             let ch = str.charAt(c);
 
             //div let's go!
-            let win = this.Match(ch, this.dict)
+            let win = undefined;
+            if(this.curGroup){
+                win = this.Match(ch, this.curGroup)
+            }
+            else {
+                win = this.Match(ch, this.dict)
+            }
 
             if(!this.cmpDiv(win, prevWin)){
                 div = this.newDiv()
@@ -169,7 +234,7 @@ class Decanter {
     }
 
     cmpDiv(d1, d2){
-        return d1 == d2 || (d1 && d2 && d1.path == d2.path)
+        return d1 && d2 && (d1 == d2 || d1.path == d2.path)
     }
 }
 
