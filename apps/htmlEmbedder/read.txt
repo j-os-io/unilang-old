@@ -1,0 +1,3 @@
+var that = funcCall() // random names
+that.random()
+echo that // no new line

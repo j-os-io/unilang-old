@@ -105,7 +105,7 @@ class Decanter {
                 let name = cDict.$.name
                 if(name){
                     tree.push(name);
-                    path += name + '.'
+                    path = name + '.' + path
                     lastName = name
                 }
 
