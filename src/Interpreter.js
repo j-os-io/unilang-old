@@ -1,7 +1,10 @@
 
 class Interpreter {
-    constructor(){
+    constructor(Engine){
+        this.Engine = Engine
+
         this.Main = new Switch("Main", undefined);
+        this.Main._int = this;
     }
 
     ReadDividends(divs){
@@ -60,6 +63,7 @@ class Switch {
 
     NewSwitch(name, match=''){
         let sw = new Switch(name, match, this)
+        sw._int = this._int
         this.switches.push(sw)
         return sw
     }
@@ -71,8 +75,27 @@ class Switch {
                     if (this.match.length > 0) {
                         switch(this.match[0]){
                             default:
+                                let divsMatch = this._int.Engine.Decanter.ReadChars(this.match)
+                                this._iDiv = 0
                                 this._matcher = (div) => {
-                                    return div.cont == this.match;
+                                    while(true){
+                                        if(this._iDiv >= divsMatch.length)
+                                            this._iDiv = 0
+
+                                        if(divsMatch[this._iDiv].cont == div.cont) {
+                                            this._iDiv++;
+                                            return this._iDiv == divsMatch.length;
+                                        }
+                                        else{
+                                            if(this._iDiv > 0)
+                                                this._iDiv = 0;
+                                            else
+                                                return false;
+                                        }
+
+                                    }
+
+                                    return true;
                                 };
                         }
                     }
@@ -93,6 +116,18 @@ class Switch {
 
         return this._matcher(Dividend);
     }
+
+    ///
+    /// Fast settings
+    ///
+    end(){
+        this.catch = function(tag){
+            this._int.tag = tag._parent
+            this._int.Return()
+        }
+        return this
+    }
+
 }
 
 class Tag {

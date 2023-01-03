@@ -8,7 +8,7 @@ class Engine {
         this.Languages = Languages;
 
         this.Decanter = new Decanter();
-        this.Interpreter = new Interpreter();
+        this.Interpreter = new Interpreter(this);
     }
 
     SetLanguage(language){

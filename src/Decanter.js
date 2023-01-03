@@ -199,7 +199,8 @@ class Decanter {
     }
 
     ReadChars(str){
-        let div = this.newDiv();
+        this.dividends = [];
+        let div = undefined;
 
         let prevWin = null
         for(let c=0; c<str.length; c++){
