@@ -1,8 +1,13 @@
 
 module.exports = {
-    CMul: {
+    CMul: { // concept in progress...
         get (){
-            return require('CMul/');
+            return require('./CMul/');
+        }
+    },
+    HTML: {
+        get(){
+            return require('./HTML.js');
         }
     }
 }

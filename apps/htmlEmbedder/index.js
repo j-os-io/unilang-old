@@ -3,7 +3,7 @@ const fs = require("fs");
 const Unilang = require('../../index.js')
 
 let engine = new Unilang()
-engine.Decanter.DictAddStringSupport();
+engine.SetLanguage(engine.Languages.HTML.get())
 
 let test = fs.readFileSync("/Users/riccardo/Sources/GitHub/GentleMail/templates/It's time to move on to your Mac's next interface.html").toString()
 

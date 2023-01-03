@@ -89,6 +89,7 @@ class Decanter {
 
                     default:
                         $.type = 0;
+                        break;
                 }
                 
             }
@@ -220,7 +221,7 @@ class Decanter {
             }
 
             div.end = c
-            div.dividend += ch
+            div.cont += ch
 
             prevWin = win
         }
