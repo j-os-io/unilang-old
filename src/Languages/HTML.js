@@ -14,6 +14,10 @@ module.exports = function(engine){
     let sTagClose = sTag.NewSwitch('close', '>').required()
 
     sTagClose.catch = function(tag, div){
+        //Ok, fine, but now read the attributes
+
+
+        // Then close the tag
         if(Interpreter.tag.end || Interpreter.tag.define) {
             Interpreter.tag = Interpreter.tag._parent
         }

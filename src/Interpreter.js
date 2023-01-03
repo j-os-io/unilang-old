@@ -66,14 +66,20 @@ class Interpreter {
                     this.tag.$Insert(thisTag, winnerSw.name);
                 }
 
-                for(let dd=(d-winnerSw._iDiv)+1; dd<=d; dd++)
+                // temporary solution for getting the activators dividends
+                for(let dd=(d-winnerSw._iDiv)+1; dd<=d; dd++) {
                     thisTag.$initBy.push(divs[dd])
+                    this.tag.$dividends.push(divs[dd])
+
+                    divs[dd].tag = thisTag
+                }
 
                 if(winnerSw.catch)
                     winnerSw.catch(thisTag, div)
             }
             else {
                 this.tag.$dividends.push(div)
+                div.tag = this.tag
             }
         }
 
