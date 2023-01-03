@@ -23,7 +23,7 @@ class Interpreter {
 
             // Check for parallels lines
             let lines = [...this.workingSwitch.lines]
-            if(lines.length > 1){
+            if(lines.length > 0){
                 for(let line of lines){
                     let dd = d
                     while(true){
@@ -49,7 +49,10 @@ class Interpreter {
             }
 
             // Handle winner switch
-            if(winnerSw){
+            if(winnerSw && winnerSw._bestThrow >= 0){
+                // Bring ahead the reader
+                d = winnerSw._bestThrow-1;
+
                 let thisTag = new Tag(winnerSw)
 
                 if(winnerSw.switches.length > 0) {
@@ -65,8 +68,9 @@ class Interpreter {
                 if(winnerSw.catch)
                     winnerSw.catch(thisTag, div)
             }
-
-            this.tag.$dividends.push(div)
+            else {
+                this.tag.$dividends.push(div)
+            }
         }
 
         return root
@@ -185,8 +189,9 @@ class Tag {
             this._d.push(i)
             this[i] = val
         }
-
-        this[this._i++] = val
+        else {
+            this[this._i++] = val
+        }
 
         if(val instanceof Tag)
             val._parent = this
