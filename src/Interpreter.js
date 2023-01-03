@@ -50,6 +50,8 @@ class Interpreter {
 
             // Handle winner switch
             if(winnerSw && winnerSw._bestThrow >= 0){
+                let b = d // b stand for 'born'
+
                 // Bring ahead the reader
                 d = winnerSw._bestThrow-1;
 
@@ -62,8 +64,10 @@ class Interpreter {
                 }
                 else {
                     this.tag.$Insert(thisTag, winnerSw.name);
-                    thisTag.$dividends.push(div)
                 }
+
+                for(let dd=(d-winnerSw._iDiv)+1; dd<=d; dd++)
+                    thisTag.$initBy.push(divs[dd])
 
                 if(winnerSw.catch)
                     winnerSw.catch(thisTag, div)
@@ -169,6 +173,12 @@ class Switch {
         return this
     }
 
+    required(){
+        this.parent.requires = this.name
+
+        return this
+    }
+
 }
 
 class Tag {
@@ -177,6 +187,7 @@ class Tag {
         this._d = []
 
         this.$dividends = [];
+        this.$initBy = []
 
         if(sw){
             this.$Insert(sw.name, "$name") // only for debug purposes, for the moment

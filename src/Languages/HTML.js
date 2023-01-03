@@ -11,7 +11,7 @@ module.exports = function(engine){
     let sTag = Interpreter.Main.NewSwitch('tag', '<')
     let sTagDefine = sTag.NewSwitch('define', '!')
     let sTagEnd = sTag.NewSwitch('end', '/')
-    let sTagClose = sTag.NewSwitch('close', '>')
+    let sTagClose = sTag.NewSwitch('close', '>').required()
 
     sTagClose.catch = function(tag, div){
         if(Interpreter.tag.end || Interpreter.tag.define) {
