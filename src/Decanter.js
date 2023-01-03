@@ -225,6 +225,8 @@ class Decanter {
 
             prevWin = win
         }
+
+        return this.dividends
     }
 
     newDiv(){
@@ -240,7 +242,7 @@ class Decanter {
 
 class Dividend {
     constructor(){
-        this.dividend = '';
+        this.cont = '';
 
         this.start = 0;
         this.end = undefined;

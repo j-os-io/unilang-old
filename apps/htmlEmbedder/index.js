@@ -7,6 +7,7 @@ engine.SetLanguage(engine.Languages.HTML.get())
 
 let test = fs.readFileSync("/Users/riccardo/Sources/GitHub/GentleMail/templates/It's time to move on to your Mac's next interface.html").toString()
 
-let read = engine.Decanter.ReadChars(test)
+let divs = engine.Decanter.ReadChars(test)
+let tags = engine.Interpreter.ReadDividends(divs)
 
-console.log("read", engine.Decanter.dividends)
+console.log("tags:", tags)

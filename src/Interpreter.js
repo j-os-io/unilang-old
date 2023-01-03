@@ -6,25 +6,45 @@ class Interpreter {
 
     ReadDividends(divs){
         this.workingSwitch = this.Main
-        let root = this.tag = new Tag()
+        let root = this.tag = new Tag(this.Main)
 
         for(let d in divs){
             let div = divs[d]
 
+            let newSwitch = false
+
             for(let sw of this.workingSwitch.switches){
                 if(sw.CheckMatch(div)){
-
-                    let thisTag = tag.$Insert(new Tag(sw));
+                    newSwitch = true
+                    let thisTag = new Tag(sw)
 
                     if(sw.switches.length > 0) {
+                        this.tag.$Insert(thisTag);
                         this.workingSwitch = sw
                         this.tag = thisTag
                     }
+                    else {
+                        this.tag.$Insert(thisTag, sw.name);
+                    }
+
+                    thisTag.$dividends.push(div)
+
+                    if(sw.catch)
+                        sw.catch(thisTag, div)
+
+                    break;
                 }
             }
+
+            if(!newSwitch)
+                this.tag.$dividends.push(div)
         }
 
         return root
+    }
+
+    Return(){
+        this.workingSwitch = this.workingSwitch.parent
     }
 }
 
@@ -35,8 +55,7 @@ class Switch {
         this.switches = [];
         this.match = match;
         this.parent = parent;
-
-        this.dividends = [];
+        this.catch = undefined;
     }
 
     NewSwitch(name, match=''){
@@ -45,14 +64,14 @@ class Switch {
         return sw
     }
 
-    CheckMatch(div){
+    CheckMatch(Dividend){
         if(!this._matcher) {
             switch (typeof this.match) {
                 case 'string':
                     if (this.match.length > 0) {
                         switch(this.match[0]){
                             default:
-                                this._matcher = () => {
+                                this._matcher = (div) => {
                                     return div.cont == this.match;
                                 };
                         }
@@ -72,7 +91,7 @@ class Switch {
             }
         }
 
-        this._matcher();
+        return this._matcher(Dividend);
     }
 }
 
@@ -80,6 +99,8 @@ class Tag {
     constructor(sw = undefined){
         this._i = 0
         this._d = []
+
+        this.$dividends = [];
 
         if(sw){
             this.$Insert(sw.name, "$name") // only for debug purposes, for the moment
@@ -94,6 +115,9 @@ class Tag {
             this._d.push(i)
 
         this[i] = val
+
+        if(val instanceof Tag)
+            val._parent = this
 
         return val
     }
