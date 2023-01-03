@@ -9,12 +9,13 @@ module.exports = function(engine){
     let sCommentEnd = sComment.NewSwitch('end', '-->').end()
 
     let sTag = Interpreter.Main.NewSwitch('tag', '<')
+    let sTagDefine = sTag.NewSwitch('define', '!')
     let sTagEnd = sTag.NewSwitch('end', '/')
     let sTagClose = sTag.NewSwitch('close', '>')
 
     sTagClose.catch = function(tag, div){
-        if(tag.end) {
-            Interpreter.tag = tag._parent
+        if(Interpreter.tag.end || Interpreter.tag.define) {
+            Interpreter.tag = Interpreter.tag._parent
         }
 
         Interpreter.Return()

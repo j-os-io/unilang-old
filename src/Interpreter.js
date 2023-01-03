@@ -11,36 +11,62 @@ class Interpreter {
         this.workingSwitch = this.Main
         let root = this.tag = new Tag(this.Main)
 
-        for(let d in divs){
+        for(let d=0; d < divs.length; d++){
             let div = divs[d]
 
-            let newSwitch = false
+            let winnerSw = undefined
 
+            this.workingSwitch.lines = [] // clear parallel lines
             for(let sw of this.workingSwitch.switches){
-                if(sw.CheckMatch(div)){
-                    newSwitch = true
-                    let thisTag = new Tag(sw)
+                sw.CheckMatch(div)
+            }
 
-                    if(sw.switches.length > 0) {
-                        this.tag.$Insert(thisTag);
-                        this.workingSwitch = sw
-                        this.tag = thisTag
+            // Check for parallels lines
+            let lines = [...this.workingSwitch.lines]
+            if(lines.length > 1){
+                for(let line of lines){
+                    let dd = d
+                    while(true){
+                        let res = line.CheckMatch(divs[dd++])
+
+                        if(res){
+                            line._bestThrow = dd
+                            break
+                        }
+                        else if(res === 0){
+                            line._bestThrow = -1
+                            break
+                        }
                     }
-                    else {
-                        this.tag.$Insert(thisTag, sw.name);
-                    }
-
-                    thisTag.$dividends.push(div)
-
-                    if(sw.catch)
-                        sw.catch(thisTag, div)
-
-                    break;
                 }
             }
 
-            if(!newSwitch)
-                this.tag.$dividends.push(div)
+            // The winner is the one which go far away
+            winnerSw = lines[0]
+            for(let line of lines){
+                if(line._bestThrow > winnerSw._bestThrow)
+                    winnerSw = line
+            }
+
+            // Handle winner switch
+            if(winnerSw){
+                let thisTag = new Tag(winnerSw)
+
+                if(winnerSw.switches.length > 0) {
+                    this.tag.$Insert(thisTag);
+                    this.workingSwitch = winnerSw
+                    this.tag = thisTag
+                }
+                else {
+                    this.tag.$Insert(thisTag, winnerSw.name);
+                    thisTag.$dividends.push(div)
+                }
+
+                if(winnerSw.catch)
+                    winnerSw.catch(thisTag, div)
+            }
+
+            this.tag.$dividends.push(div)
         }
 
         return root
@@ -59,6 +85,8 @@ class Switch {
         this.match = match;
         this.parent = parent;
         this.catch = undefined;
+
+        this.lines = [];
     }
 
     NewSwitch(name, match=''){
@@ -83,14 +111,23 @@ class Switch {
                                             this._iDiv = 0
 
                                         if(divsMatch[this._iDiv].cont == div.cont) {
+                                            if(this._iDiv == 0)
+                                                this.parent.lines.push(this)
+
                                             this._iDiv++;
-                                            return this._iDiv == divsMatch.length;
+
+                                            let end = this._iDiv == divsMatch.length;
+                                            return end
                                         }
                                         else{
+                                            /*let i = this.parent.lines.indexOf(this);
+                                            if(i >= 0)
+                                                this.parent.lines.splice(i, 1)*/
+
                                             if(this._iDiv > 0)
                                                 this._iDiv = 0;
                                             else
-                                                return false;
+                                                return 0;
                                         }
 
                                     }
@@ -122,7 +159,7 @@ class Switch {
     ///
     end(){
         this.catch = function(tag){
-            this._int.tag = tag._parent
+            this._int.tag = this._int.tag._parent
             this._int.Return()
         }
         return this
@@ -144,12 +181,12 @@ class Tag {
     }
 
     $Insert(val, i=-1){
-        if(i==-1)
-            i = this._i++
-        else
+        if(i!=-1) {
             this._d.push(i)
+            this[i] = val
+        }
 
-        this[i] = val
+        this[this._i++] = val
 
         if(val instanceof Tag)
             val._parent = this
