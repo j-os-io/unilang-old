@@ -71,6 +71,7 @@ class Interpreter {
                     thisTag.$initBy.push(divs[dd])
                     this.tag.$dividends.push(divs[dd])
 
+                    //TODO: Inject to dividend the possibility to be implemented in a deeper tag
                     divs[dd].tag = thisTag
                 }
 
@@ -196,8 +197,8 @@ class Tag {
         this.$initBy = []
 
         if(sw){
-            this.$Insert(sw.name, "$name") // only for debug purposes, for the moment
-            this.$Insert(sw, "$switch")
+            this['$name'] = sw.name // only for debug purposes, for the moment
+            this['$switch'] = sw
         }
     }
 
