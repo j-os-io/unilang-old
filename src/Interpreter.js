@@ -1,3 +1,4 @@
+const Unilang = require("../index");
 
 class Interpreter {
     constructor(Engine){
@@ -70,6 +71,7 @@ class Interpreter {
                 for(let dd=(d-winnerSw._iDiv)+1; dd<=d; dd++) {
                     thisTag.$initBy.push(divs[dd])
                     this.tag.$dividends.push(divs[dd])
+                    divs[dd].init = true
 
                     //TODO: Inject to dividend the possibility to be implemented in a deeper tag
                     divs[dd].tag = thisTag
@@ -215,6 +217,33 @@ class Tag {
             val._parent = this
 
         return val
+    }
+
+    $IterateDivs(){
+        return new IterateDividends(this)
+    }
+}
+
+class IterateDividends{
+    constructor(tag){
+        this.tag = tag
+        this.divs = tag.$dividends
+        this.i = 0
+    }
+
+    first(query){
+
+    }
+}
+
+class IterateDiv {
+    query(q) {
+        let engine = new Unilang()
+        let divs = engine.Decanter.ReadChars(q)
+
+        for(let div of divs){
+            //TODO: continue here
+        }
     }
 }
 

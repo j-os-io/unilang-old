@@ -14,8 +14,9 @@ module.exports = function(engine){
     let sTagClose = sTag.NewSwitch('close', '>').required()
 
     sTagClose.catch = function(tag, div){
-        //TODO: Ok, fine, but now read the attributes
-
+        // Ok, fine, but now read the attributes
+        let mainTag = tag._parent;
+        let divs = mainTag.$IterateDivs();
 
         // Then close the tag
         if(Interpreter.tag.end || Interpreter.tag.define) {
