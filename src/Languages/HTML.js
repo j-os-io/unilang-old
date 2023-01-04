@@ -14,7 +14,7 @@ module.exports = function(engine){
     let sTagClose = sTag.NewSwitch('close', '>').required()
 
     sTagClose.catch = function(tag, div){
-        //Ok, fine, but now read the attributes
+        //TODO: Ok, fine, but now read the attributes
 
 
         // Then close the tag
