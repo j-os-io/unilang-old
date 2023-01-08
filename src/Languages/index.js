@@ -9,5 +9,10 @@ module.exports = {
         get(){
             return require('./HTML.js');
         }
+    },
+    CPP: {
+        get(){
+            return require('./CPP.js');
+        }
     }
 }
