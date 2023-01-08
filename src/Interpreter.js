@@ -95,19 +95,24 @@ class Interpreter {
 }
 
 class Switch {
-    constructor(name, match, parent=undefined) {
+    constructor(name, match, parent=undefined, options={}) {
         this.name = name;
-        this.requires = [];
-        this.switches = [];
+        this.options = options;
         this.match = match;
         this.parent = parent;
+
+        this.requires = [];
+        this.switches = [];
         this.catch = undefined;
 
         this.lines = [];
     }
 
-    NewSwitch(name, match=''){
-        let sw = new Switch(name, match, this)
+    NewSwitch(name, match='', options={}){
+        if(typeof match == 'object')
+            options = match;
+
+        let sw = new Switch(name, match, this, options)
         sw._int = this._int
         this.switches.push(sw)
         return sw

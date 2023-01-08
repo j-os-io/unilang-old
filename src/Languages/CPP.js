@@ -4,6 +4,9 @@ module.exports = function(engine){
 
     let Interpreter = engine.Interpreter;
 
+    let sDirective = Interpreter.Main.NewSwitch('directive', '#')
+
+
 
 }
 
