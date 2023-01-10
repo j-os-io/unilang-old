@@ -5,10 +5,10 @@ module.exports = function(engine){
 
     let Interpreter = engine.Interpreter;
 
-    Interpreter.Main.default = 'expression'; //TODO: by default, if any switch is declared, works as expression
+    Interpreter.Main.default = 'expression'; //todo
 
     let sDirective = Interpreter.Main.NewSwitch('directive', '#')
     let sNewLine = sDirective.NewSwitch('newLine', '\n').end()
 
-
+    let sExpression = Interpreter.Main.NewSwitch('expression');
 }
