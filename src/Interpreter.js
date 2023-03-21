@@ -92,6 +92,47 @@ class Interpreter {
     Return(){
         this.workingSwitch = this.workingSwitch.parent
     }
+
+    ///
+    /// Logging
+    ///
+
+    LogTabs(tabs){
+        for(var t=0; t<tabs; t++){
+            process.stdout.write("== ");
+        }
+    }
+
+    LogIfExists(obj, prop){
+        if(obj[prop] !== undefined)
+            process.stdout.write(obj[prop]);
+    }
+
+    LogTags(tag, tab = 0){
+        if(false){
+            for(var t in tag){
+                console.log(t);
+            }
+        }
+
+        this.LogTabs(tab)
+        this.LogIfExists(tag, '$name');
+        process.stdout.write("\n");
+
+        this.LogTabs(tab)
+        process.stdout.write("Dividends:")
+        console.log(tag.$dividends);
+
+        for(var d of tag._d){
+            process.stdout.write('\n')
+            this.LogTags(tag[d], tab+1);
+        }
+
+        for(var i=0; i < tag._i; i++){
+            process.stdout.write('\n')
+            this.LogTags(tag[i], tab+1);
+        }
+    }
 }
 
 class Switch {
@@ -99,10 +140,11 @@ class Switch {
         this.name = name;
         this.options = options;
         this.match = match;
-        this.parent = parent;
+        this.parent = parent       
 
         this.requires = [];
         this.switches = [];
+        this.dictSwitches = {};
         this.catch = undefined;
 
         this.lines = [];
@@ -115,6 +157,8 @@ class Switch {
         let sw = new Switch(name, match, this, options)
         sw._int = this._int
         this.switches.push(sw)
+        this.dictSwitches[name] = sw;
+
         return sw
     }
 
@@ -189,10 +233,13 @@ class Switch {
 
     required(){
         this.parent.requires = this.name
-
         return this
     }
 
+    each(fn){
+        this._each = fn;
+        return this;
+    }
 }
 
 class Tag {

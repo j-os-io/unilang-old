@@ -11,4 +11,7 @@ module.exports = function(engine){
     let sNewLine = sDirective.NewSwitch('newLine', '\n').end()
 
     let sExpression = Interpreter.Main.NewSwitch('expression');
+    sExpression.each((tag)=>{
+
+    });
 }
