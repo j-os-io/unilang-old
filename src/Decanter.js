@@ -250,4 +250,10 @@ class Dividend {
     }
 }
 
+class Dividens extends Array {
+
+}
+
+Decanter.Dividend;
+Decanter.Dividends;
 module.exports = Decanter;
